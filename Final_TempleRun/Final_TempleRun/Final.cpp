@@ -7,7 +7,7 @@ struct Shape {
 	GLuint vbo[2], vao, ebo;
 };
 
-Shape s[4];
+Shape s[6];
 
 std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 
@@ -286,6 +286,62 @@ void Initvbovao()
 		glEnableVertexAttribArray(PosLocation);
 		glEnableVertexAttribArray(ColorLocation);
 	}
+	Load_Object("leftleg.obj");
+	{
+		for (int i = 0; i < 1000; i++) {
+			s[4].colors[i][0] = 0.5;
+			s[4].colors[i][1] = 0.5;
+			s[4].colors[i][2] = 1.0;
+		}
+
+		glGenVertexArrays(1, &s[4].vao);
+		glGenBuffers(2, s[4].vbo);
+		glGenBuffers(1, &s[4].ebo);
+
+		glBindVertexArray(s[4].vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, s[4].vbo[0]);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(PosLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, s[4].vbo[1]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(s[4].colors), s[4].colors, GL_STATIC_DRAW);
+		glVertexAttribPointer(ColorLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s[4].ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(unsigned int), &vertexIndices[0], GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(PosLocation);
+		glEnableVertexAttribArray(ColorLocation);
+	}
+	Load_Object("rightleg.obj");
+	{
+		for (int i = 0; i < 1000; i++) {
+			s[5].colors[i][0] = 0.5;
+			s[5].colors[i][1] = 0.5;
+			s[5].colors[i][2] = 1.0;
+		}
+
+		glGenVertexArrays(1, &s[5].vao);
+		glGenBuffers(2, s[5].vbo);
+		glGenBuffers(1, &s[5].ebo);
+
+		glBindVertexArray(s[5].vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, s[5].vbo[0]);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(PosLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, s[5].vbo[1]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(s[5].colors), s[5].colors, GL_STATIC_DRAW);
+		glVertexAttribPointer(ColorLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s[5].ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndices.size() * sizeof(unsigned int), &vertexIndices[0], GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(PosLocation);
+		glEnableVertexAttribArray(ColorLocation);
+	}
 }
 void Draw() {
 	int PosLocation = glGetAttribLocation(shaderProgramID, "in_Position");
@@ -293,6 +349,8 @@ void Draw() {
 
 	unsigned int modelLocation = glGetUniformLocation(shaderProgramID, "modelTransform"); //--- 버텍스 세이더에서 모델링 변환 위치 가져오기
 
+
+	//머리
 	glm::mat4 TR = glm::mat4(1.0f); //--- 합성 변환 행렬
 
 	{
@@ -308,6 +366,8 @@ void Draw() {
 		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
 	}
 
+
+	//몸
 	glm::mat4 TR1 = glm::mat4(1.0f); //--- 합성 변환 행렬
 
 	{
@@ -322,7 +382,9 @@ void Draw() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
 	}
+	
 
+	//왼팔
 	glm::mat4 TR2 = glm::mat4(1.0f); //--- 합성 변환 행렬
 
 	{
@@ -337,7 +399,7 @@ void Draw() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
 	}
-
+	//오른팔
 	glm::mat4 TR3 = glm::mat4(1.0f); //--- 합성 변환 행렬
 
 	{
@@ -349,6 +411,36 @@ void Draw() {
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR3)); //--- modelTransform 변수에 변
 
 		glBindVertexArray(s[3].vao);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
+	}
+	//왼다리
+	glm::mat4 TR4 = glm::mat4(1.0f); //--- 합성 변환 행렬
+
+	{
+		TR4 = glm::translate(TR4, glm::vec3(0.04, -0.45, 0)); //--- x축으로 이동 행렬
+		TR4 = glm::rotate(TR4, glm::radians(0.0f), glm::vec3(1.0, 0.0, 0.0)); //--- x축에 대하여 회전 행렬
+		TR4 = glm::rotate(TR4, glm::radians(-10.0f), glm::vec3(0.0, 1.0, 0.0)); //--- y축에 대하여 회전 행렬
+		TR4 = glm::scale(TR4, glm::vec3(0.01, 0.01, 0.01));
+
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR4)); //--- modelTransform 변수에 변
+
+		glBindVertexArray(s[4].vao);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
+	}
+	//오른다리
+	glm::mat4 TR5 = glm::mat4(1.0f); //--- 합성 변환 행렬
+
+	{
+		TR5 = glm::translate(TR5, glm::vec3(-0.04, -0.45, 0)); //--- x축으로 이동 행렬
+		TR5 = glm::rotate(TR5, glm::radians(0.0f), glm::vec3(1.0, 0.0, 0.0)); //--- x축에 대하여 회전 행렬
+		TR5 = glm::rotate(TR5, glm::radians(10.0f), glm::vec3(0.0, 1.0, 0.0)); //--- y축에 대하여 회전 행렬
+		TR5 = glm::scale(TR5, glm::vec3(0.01, 0.01, 0.01));
+
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR5)); //--- modelTransform 변수에 변
+
+		glBindVertexArray(s[5].vao);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawElements(GL_TRIANGLES, 1000, GL_UNSIGNED_INT, 0);
 	}
