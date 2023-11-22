@@ -504,3 +504,5 @@ void make_fragmentShaders()
 		return;
 	}
 }
+
+//Á¤Çöµµ ¤»¤»
