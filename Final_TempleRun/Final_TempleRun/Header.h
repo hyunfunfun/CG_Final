@@ -8,11 +8,6 @@
 #include <gl/glm/gtc/matrix_transform.hpp>
 
 
-
-
-
-
-
 #include <iostream>
 #include <stdlib.h>
 #include <random>
